@@ -4,9 +4,11 @@ import { useSyncExternalStore } from 'react';
 
 type Draft = {
   draftId: string;
-  product: { name: string; image: string };
+  product: { name: string; image: string; unitPrice: number };
   quantity: number;
   deliveryNote: string;
+  gift: { enabled: boolean; recipientName: string; message: string; fee: number };
+  total: number;
 };
 
 const subscribeToDraft = () => () => {};
@@ -53,6 +55,25 @@ export default function OrderDraftPage() {
       <p>
         Delivery note:{' '}
         <strong data-testid="draft-delivery-note">{draft.deliveryNote || 'None'}</strong>
+      </p>
+      <p>
+        Gift wrap:{' '}
+        <strong data-testid="draft-gift-wrap">
+          {draft.gift.enabled ? `Yes — €${draft.gift.fee.toFixed(2)}` : 'No'}
+        </strong>
+      </p>
+      {draft.gift.enabled && (
+        <section data-testid="draft-gift-details">
+          <p>
+            Recipient: <strong data-testid="draft-gift-recipient">{draft.gift.recipientName}</strong>
+          </p>
+          <p>
+            Gift message: <strong data-testid="draft-gift-message">{draft.gift.message || 'None'}</strong>
+          </p>
+        </section>
+      )}
+      <p>
+        Total: <strong data-testid="draft-total">€{draft.total.toFixed(2)}</strong>
       </p>
       <p className="status">Draft {draft.draftId} is ready for review.</p>
     </main>
