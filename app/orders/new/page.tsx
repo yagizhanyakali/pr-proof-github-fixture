@@ -63,6 +63,7 @@ export default function CreateOrderPage() {
             maxLength={200}
           />
         </label>
+        <p className="hint">Delivery notes longer than 80 characters cannot be saved.</p>
         {error && (
           <p className="error" data-testid="order-error">
             {error}

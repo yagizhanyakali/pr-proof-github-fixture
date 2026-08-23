@@ -15,9 +15,9 @@ export async function POST(request: Request) {
       { status: 400 },
     );
   }
-  if (deliveryNote.length > 140) {
+  if (deliveryNote.length > 80) {
     return NextResponse.json(
-      { error: 'Delivery note must be 140 characters or fewer' },
+      { error: 'Delivery note must be 80 characters or fewer' },
       { status: 400 },
     );
   }

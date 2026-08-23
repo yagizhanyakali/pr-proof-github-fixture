@@ -39,10 +39,10 @@ describe('order draft API', () => {
     const accepted = await POST(request({ quantity: 1, deliveryNote: '  Ring bell  ' }));
     await expect(accepted.json()).resolves.toMatchObject({ deliveryNote: 'Ring bell' });
 
-    const rejected = await POST(request({ quantity: 1, deliveryNote: 'a'.repeat(141) }));
+    const rejected = await POST(request({ quantity: 1, deliveryNote: 'a'.repeat(81) }));
     expect(rejected.status).toBe(400);
     await expect(rejected.json()).resolves.toEqual({
-      error: 'Delivery note must be 140 characters or fewer',
+      error: 'Delivery note must be 80 characters or fewer',
     });
   });
 });
