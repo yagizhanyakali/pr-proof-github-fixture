@@ -45,6 +45,21 @@ input {
   font: inherit;
   width: 100%;
 }
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.checkbox-label input {
+  width: auto;
+}
+.gift-details {
+  margin-top: 16px;
+  padding: 4px 16px 16px;
+  border: 1px solid #3a587a;
+  border-radius: 12px;
+  background: rgba(7, 17, 29, 0.5);
+}
 button {
   margin-top: 24px;
   padding: 12px 16px;

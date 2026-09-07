@@ -11,6 +11,9 @@ export default function CreateOrderPage() {
   const router = useRouter();
   const [quantity, setQuantity] = useState('1');
   const [deliveryNote, setDeliveryNote] = useState('');
+  const [giftWrap, setGiftWrap] = useState(false);
+  const [recipientName, setRecipientName] = useState('');
+  const [giftMessage, setGiftMessage] = useState('');
   const [error, setError] = useState('');
   async function submit(event: FormEvent) {
     event.preventDefault();
@@ -18,7 +21,7 @@ export default function CreateOrderPage() {
     const response = await fetch('/api/order-draft', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ quantity, deliveryNote }),
+      body: JSON.stringify({ quantity, deliveryNote, giftWrap, recipientName, giftMessage }),
     });
     const draft = await response.json();
     if (!response.ok) {
@@ -63,6 +66,39 @@ export default function CreateOrderPage() {
             maxLength={200}
           />
         </label>
+        <p className="hint">Delivery notes longer than 80 characters cannot be saved.</p>
+        <label className="checkbox-label">
+          <input
+            data-testid="gift-wrap"
+            checked={giftWrap}
+            onChange={(event) => setGiftWrap(event.target.checked)}
+            type="checkbox"
+          />
+          Add gift wrap for €5.00
+        </label>
+        {giftWrap && (
+          <section data-testid="gift-details" className="gift-details">
+            <p className="hint">Gift orders need a recipient name. A gift message is optional.</p>
+            <label>
+              Recipient name
+              <input
+                data-testid="gift-recipient-name"
+                value={recipientName}
+                onChange={(event) => setRecipientName(event.target.value)}
+              />
+            </label>
+            <label>
+              Gift message
+              <input
+                data-testid="gift-message"
+                value={giftMessage}
+                onChange={(event) => setGiftMessage(event.target.value)}
+                maxLength={200}
+              />
+            </label>
+            <p className="hint">Gift messages longer than 120 characters cannot be saved.</p>
+          </section>
+        )}
         {error && (
           <p className="error" data-testid="order-error">
             {error}

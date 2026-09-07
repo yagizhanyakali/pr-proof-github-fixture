@@ -39,10 +39,43 @@ describe('order draft API', () => {
     const accepted = await POST(request({ quantity: 1, deliveryNote: '  Ring bell  ' }));
     await expect(accepted.json()).resolves.toMatchObject({ deliveryNote: 'Ring bell' });
 
-    const rejected = await POST(request({ quantity: 1, deliveryNote: 'a'.repeat(141) }));
+    const rejected = await POST(request({ quantity: 1, deliveryNote: 'a'.repeat(81) }));
     expect(rejected.status).toBe(400);
     await expect(rejected.json()).resolves.toEqual({
-      error: 'Delivery note must be 140 characters or fewer',
+      error: 'Delivery note must be 80 characters or fewer',
+    });
+  });
+
+  it('requires a recipient for gift orders and preserves gift details in the draft', async () => {
+    const missingRecipient = await POST(request({ quantity: 2, giftWrap: true }));
+    expect(missingRecipient.status).toBe(400);
+    await expect(missingRecipient.json()).resolves.toEqual({
+      error: 'Recipient name is required for a gift order',
+    });
+
+    const accepted = await POST(
+      request({
+        quantity: 2,
+        giftWrap: true,
+        recipientName: '  Ada Lovelace ',
+        giftMessage: '  Enjoy your mug!  ',
+      }),
+    );
+    expect(accepted.status).toBe(201);
+    await expect(accepted.json()).resolves.toMatchObject({
+      gift: { enabled: true, recipientName: 'Ada Lovelace', message: 'Enjoy your mug!', fee: 5 },
+      total: 41,
+    });
+  });
+
+  it('rejects gift messages beyond the server boundary', async () => {
+    const response = await POST(
+      request({ quantity: 1, giftWrap: true, recipientName: 'Ada', giftMessage: 'a'.repeat(121) }),
+    );
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      error: 'Gift message must be 120 characters or fewer',
     });
   });
 });
